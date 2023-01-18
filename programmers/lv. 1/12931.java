@@ -1,5 +1,5 @@
 import java.util.*;
-public class Main extends Object {
+class Main_12931 extends Object {
     public int solution(int n){
         int answer = 0;
         int num = 1;
@@ -15,7 +15,7 @@ public class Main extends Object {
     }
 
     public static void main(String[] args) {
-        Main m = new Main();
+        Main_12931 m = new Main_12931();
         System.out.println(m.solution(987));
     }
 }

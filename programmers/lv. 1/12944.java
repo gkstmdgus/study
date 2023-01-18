@@ -1,5 +1,5 @@
 
-public class Main extends Object {
+class Main_12944 extends Object {
     public double solution(int[] arr){
         double answer = 0;
         int leng = arr.length;
