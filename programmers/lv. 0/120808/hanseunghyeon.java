@@ -1,7 +1,6 @@
-package lv0;
-import java.util.Arrays;
+package lv.
 
-class Solution_120808_1{
+class Solution {
     public int[] solution(int numer1, int denom1, int numer2, int denom2) {
         int[] answer = new int[2];
         int i = 1;
@@ -20,12 +19,5 @@ class Solution_120808_1{
             }
         }
         return answer;
-    }
-}
-
-class Main_120808_1{
-    public static void main(String[] args) {
-        Solution_120808_1 sol = new Solution_120808_1();
-        System.out.println(Arrays.toString(sol.solution(3,4,5,6)));
     }
 }
