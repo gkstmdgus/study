@@ -19,7 +19,7 @@
 	2. 삭제 후 성공 표시 반환
 
 ## Use Case
-![과제 Use Case.png](/Users/han/personal_git/study/spring/Assigment/HangHaeBlog/img/UseCase.png)
+![과제 Use Case.png](./img/UseCase.png)
 
 ## API 명세서
 | Function         | Method | URL           |
