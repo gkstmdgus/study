@@ -117,6 +117,7 @@ MemoRepository 인터페이스 만들고 JPARepository 연결하니 같은 에�
 문제점 : MemoController에서 데이터를 받아올 때 JSON 형식을 매개변수로 받으려면 @RequestBody를 붙여줘야 하는데 그냥 MemoDto에 냅다 받아버림. @RequestBody를 붙여서 해결.
 
 4. 다시 NullPointException..
+
 오류 : NullPointException
 원인분석 : JSON으로 입력한 값을 입력이 됐는데 자동으로 입력되는 id값이 값이 초기화가 안돼서 save과정 NullPointException이 발생한 것으로 추정
 해결방법 : 강의 프로젝트와 내 자료 비교
@@ -125,6 +126,7 @@ private final을 안붙여서 생긴 오류
 이유 : `@RequiredArgsConstructor`어너테이션은 `final`또는`@NotNull`이 붙은 생성자를 자동 생성해주는 어너테이션이다. 그래서 final이 붙지않은 MemoRepository를 생성하지 못했고 거기서 문제가 발생해서 NullPointException이 발생한 것으로 추정. 좀 더 확인이 필요.
 
 5. 생성날짜 NullPointException..
+
 오류 : NullPointException
 원인 분석 : 이전 TimeStamped 클래스 파일을 복사해서 넣어도 문제 발생 확인. 다른 부분에서 시간을 읽는 곳이 있고 거기가 문제라고 판단
 해결 방법 : `@EntityListeners(AuditingEntityListener.class)` 구글링
