@@ -118,7 +118,7 @@ MemoRepository 인터페이스 만들고 JPARepository 연결하니 같은 에�
 
 4. 다시 NullPointException..
 
-오류 : NullPointException
+오류 : NullPointException   
 원인분석 : JSON으로 입력한 값을 입력이 됐는데 자동으로 입력되는 id값이 값이 초기화가 안돼서 save과정 NullPointException이 발생한 것으로 추정	
 해결방법 : 강의 프로젝트와 내 자료 비교
 문제점 : `private final MemoRepository memoRepository` 
