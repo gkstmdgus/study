@@ -96,7 +96,8 @@
 1. JPA 관련해서 오류발생하면서 Spring 서버 띄우기 실패
 
 오류 : BeanCreationException
-해결방법 : 다 지우고 다시 처음부터 하나씩 입력하면서 실행해봄
+해결방법 : 다 지우고 다시 처음부터 하나씩 입력하면서 실행해봄    
+MemoRepository 인터페이스 만들고 JPARepository 연결하니 같은 에러 발생
 MemoRepository 인터페이스 만들고 JPARepository 연결하니 같은 에러 발생
 문제점을 둘러보다 Memo 엔티티 클래스에 @Entity대신 @Setter 어노테이션 붙어있는거 확인
 그래서 JPA가 Mem 객체를 넣는데 인식을 못해서 나온 오류로 추정
