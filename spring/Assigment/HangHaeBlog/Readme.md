@@ -189,14 +189,14 @@ public MemoDto(Memo memo) {
     this.password = memo.getPassword();  
 }
 ```
-오류 : InvalidDefinitionException
-원인 분석 : MemoDto에 위의 생성자를 입력하면 Spring서버 구동은 되고 GET도 작동하지만 POST를 날리면 에러가 발생했다. 그래서 POST 과정에서 문제가 있을거라고 판단.
-해결 방법 : MemoDto에 기본 생성자 생성.
+오류 : InvalidDefinitionException    
+원인 분석 : MemoDto에 위의 생성자를 입력하면 Spring서버 구동은 되고 GET도 작동하지만 POST를 날리면 에러가 발생했다. 그래서 POST 과정에서 문제가 있을거라고 판단.   
+해결 방법 : MemoDto에 기본 생성자 생성.    
 문제점 : `public Long post(@RequestBody MemoDto memoDto)` 여기서 문제가 있다고 판단했다. MemoDto 객체에 정보를 담으려면 객체를 생성해야하는데 생성자가 없으면 기본 생성자를 만들어주기때문에 위의 생성자를 넣지 않았을 때는 정상적으로 작동했다. 하지만 위의 생성자를 넣으면 기본 생성자를 만들어주지 않으므로 POST 요청을 받아올 때 객체를 생성하지 못한다. 그래서 기본 생성자를 넣으면 작동이 되는 것이다. 맞나?
 
 2. Memo 업데이트 오류   
 
-오류 : 업데이트 내용이 DB에 저장이 안됨.
-원인 분석 : 메모의 변경사항을 저장하지 않아서 그냥 저장 되는구나 했는데 내가 만든 프로젝트에서는 변경까지는 성공했지만 다시 조회해보면 이전 데이터 그대로였다. 그래서 과제 내용과 내 프로젝트를 비교해봤다.
-해결방법 : MemoService의 `update()`메서드에 `@Transactional` 붙이기.
+오류 : 업데이트 내용이 DB에 저장이 안됨.   
+원인 분석 : 메모의 변경사항을 저장하지 않아서 그냥 저장 되는구나 했는데 내가 만든 프로젝트에서는 변경까지는 성공했지만 다시 조회해보면 이전 데이터 그대로였다. 그래서 과제 내용과 내 프로젝트를 비교해봤다.   
+해결방법 : MemoService의 `update()`메서드에 `@Transactional` 붙이기.    
 문제점 : 몰루?
