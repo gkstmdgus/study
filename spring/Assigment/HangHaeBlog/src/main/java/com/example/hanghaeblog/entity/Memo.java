@@ -1,6 +1,6 @@
 package com.example.hanghaeblog.entity;
 
-import com.example.hanghaeblog.dto.MemoDto;
+import com.example.hanghaeblog.dto.RequDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,21 +16,28 @@ public class Memo extends TimeStamped {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String author;
 
     @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
-    private String description;
+    private String content;
 
     @Column(nullable = false)
     private String password;
 
-    public Memo(MemoDto memoDto) {
-        this.name = memoDto.getName();
-        this.title = memoDto.getTitle();
-        this.description = memoDto.getDescription();
-        this.password = memoDto.getPassword();
+    public Memo(RequDto requDto) {
+        this.author = requDto.getAuthor();
+        this.title = requDto.getTitle();
+        this.content = requDto.getContent();
+        this.password = requDto.getPassword();
+    }
+
+    public void update(RequDto requDto) {
+        this.author = requDto.getAuthor();
+        this.title = requDto.getTitle();
+        this.content = requDto.getContent();
+        this.password = requDto.getPassword();
     }
 }
