@@ -5,6 +5,7 @@ import com.example.hanghaeblog.dto.RespDto;
 import com.example.hanghaeblog.entity.Memo;
 import com.example.hanghaeblog.repository.MemoRepository;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +41,7 @@ public class MemoService {
     @Transactional
     public Long updateContent(RequDto requDto, Long id) {
         Memo memo = checkIdValidation(id);
+        checkPasswordValidation(memo,requDto);
         memo.update(requDto);
         return memo.getId();
     }
@@ -47,10 +49,8 @@ public class MemoService {
     @Transactional
     public String deleteMemo(RequDto requDto, Long id) {
         Memo memo = checkIdValidation(id);
-        if(memo.getPassword().equals(requDto.getPassword()))
-            memoRepository.deleteById(id);
-        else
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        checkPasswordValidation(memo,requDto);
+        memoRepository.deleteById(id);
         return "Success";
     }
 
@@ -58,6 +58,11 @@ public class MemoService {
         return memoRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("id가 존재하지 않습니다.")
         );
+    }
+
+    public void checkPasswordValidation(Memo memo, RequDto requDto) {
+        if(!memo.getPassword().equals(requDto.getPassword()))
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
     }
 }
 
