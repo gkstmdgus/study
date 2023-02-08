@@ -2,19 +2,18 @@ package com.example.hanghaeblog.dto;
 
 import com.example.hanghaeblog.entity.Memo;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-public class RequDto {
+@NoArgsConstructor
+public class RequestDto {
     private Long id;
     private String author;
     private String title;
     private String content;
     private String password;
 
-    public RequDto() {
-    }
-
-    public RequDto(Memo memo) {
+    public RequestDto(Memo memo) {
         this.id = memo.getId();
         this.author = memo.getAuthor();
         this.title = memo.getTitle();

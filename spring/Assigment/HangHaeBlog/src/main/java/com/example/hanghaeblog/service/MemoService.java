@@ -1,57 +1,58 @@
 package com.example.hanghaeblog.service;
 
-import com.example.hanghaeblog.dto.RequDto;
-import com.example.hanghaeblog.dto.RespDto;
+import com.example.hanghaeblog.dto.RequestDto;
+import com.example.hanghaeblog.dto.ResponseDto;
 import com.example.hanghaeblog.entity.Memo;
 import com.example.hanghaeblog.repository.MemoRepository;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
 public class MemoService {
     private final MemoRepository memoRepository;
 
-    public List<RespDto> getAllMemos() {
+    public List<ResponseDto> getAllMemos() {
         List<Memo> byOrderByModifiedAtDesc = memoRepository.findByOrderByModifiedAtDesc();
-        List<RespDto> mto = new ArrayList<>();
+        List<ResponseDto> mto = new ArrayList<>();
         for (Memo memo : byOrderByModifiedAtDesc) {
-            mto.add(new RespDto(memo));
+            mto.add(new ResponseDto(memo));
         }
         return mto;
     }
 
-    public Long postMemo(RequDto requDto) {
-        Memo memo = new Memo(requDto);
+    public ResponseDto.id postMemo(RequestDto requestDto) {
+        Memo memo = new Memo(requestDto);
         memoRepository.save(memo);
-        return memo.getId();
+        return new ResponseDto.id(memo.getId());
     }
 
     @Transactional
-    public RespDto getMemo(Long id) {
-        return new RespDto(checkIdValidation(id));
+    public ResponseDto getMemo(Long id) {
+        return new ResponseDto(checkIdValidation(id));
     }
 
     @Transactional
-    public Long updateContent(RequDto requDto, Long id) {
+    public ResponseDto updateContent(RequestDto requestDto, Long id) {
         Memo memo = checkIdValidation(id);
-        checkPasswordValidation(memo,requDto);
-        memo.update(requDto);
-        return memo.getId();
+        checkPasswordValidation(memo, requestDto);
+        memo.update(requestDto);
+        return new ResponseDto(memo);
     }
 
     @Transactional
-    public String deleteMemo(RequDto requDto, Long id) {
+    public ResponseDto.isSuccess deleteMemo(RequestDto requestDto, Long id) {
+        ResponseDto t = new ResponseDto();
         Memo memo = checkIdValidation(id);
-        checkPasswordValidation(memo,requDto);
+        checkPasswordValidation(memo, requestDto);
         memoRepository.deleteById(id);
-        return "Success";
+        ResponseDto.isSuccess isSuccess = new ResponseDto.isSuccess(true);
+        System.out.println(isSuccess);
+        return isSuccess;
     }
 
     public Memo checkIdValidation(Long id) {
@@ -60,8 +61,8 @@ public class MemoService {
         );
     }
 
-    public void checkPasswordValidation(Memo memo, RequDto requDto) {
-        if(!memo.getPassword().equals(requDto.getPassword()))
+    public void checkPasswordValidation(Memo memo, RequestDto requestDto) {
+        if(!memo.getPassword().equals(requestDto.getPassword()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
     }
 }

@@ -1,9 +1,8 @@
 package com.example.hanghaeblog.entity;
 
-import com.example.hanghaeblog.dto.RequDto;
+import com.example.hanghaeblog.dto.RequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -27,17 +26,17 @@ public class Memo extends TimeStamped {
     @Column(nullable = false)
     private String password;
 
-    public Memo(RequDto requDto) {
-        this.author = requDto.getAuthor();
-        this.title = requDto.getTitle();
-        this.content = requDto.getContent();
-        this.password = requDto.getPassword();
+    public Memo(RequestDto requestDto) {
+        this.author = requestDto.getAuthor();
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.password = requestDto.getPassword();
     }
 
-    public void update(RequDto requDto) {
-        this.author = requDto.getAuthor();
-        this.title = requDto.getTitle();
-        this.content = requDto.getContent();
-        this.password = requDto.getPassword();
+    public void update(RequestDto requestDto) {
+        this.author = requestDto.getAuthor();
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.password = requestDto.getPassword();
     }
 }

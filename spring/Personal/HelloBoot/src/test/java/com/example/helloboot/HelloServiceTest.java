@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 public class HelloServiceTest {
     @Test
     void simpleHelloService() {
@@ -17,7 +18,6 @@ public class HelloServiceTest {
     @Test
     void helloDecorator() {
         HelloDecorator decorator = new HelloDecorator(name -> name);
-
         Assertions.assertThat(decorator.sayHello("test")).isEqualTo("*test*");
     }
 }
