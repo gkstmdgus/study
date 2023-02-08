@@ -244,7 +244,7 @@ JPA의 영속성
          
 2.  어떤 상황에 어떤 방식의 request를 써야하나요?
 
-POST 요청을 보낼때는 body에 담아서 전송하고 GET은 param으로 전송했다. 
+POST 요청을 보낼때는 body에 담아서 전송하고 GET은 param으로 전송했다.        
 PUT과 DELETE는 password를 body에 담아서 전송하고 id는 param으로 전송했다.
         
 3.  RESTful한 API를 설계했나요? 어떤 부분이 그런가요? 어떤 부분이 그렇지 않나요?
