@@ -11,10 +11,10 @@
 	2. 저장된 게시글 Client로 반환
 - [x] 선택한 게시글 조회 API 
 	1. 선택한 게시글의 제목, 작성자명, 작성 날짜, 작성 내용 조회
-- [ ] 선택한 게시글 수정 API (화)
+- [x] 선택한 게시글 수정 API (화)
 	1. 수정 요청시 수정할 데이터와 비밀번호를 같이 보내서 일치여부 확인
 	2. 제목, 작성자명, 작성 내용을 수정해서 Client로 반환
-- [ ] 선택한 게시글 삭제 API (수)
+- [x] 선택한 게시글 삭제 API (수)
 	1. 삭제 요청시 비밀번호를 같이 보내서 비밀번호 일치여부 확인
 	2. 삭제 후 성공 표시 반환
 
@@ -240,22 +240,26 @@ JPA의 영속성
 1.  수정, 삭제 API의 request를 어떤 방식으로 사용하셨나요? (param, query, body)
 
 수정에서 id는 query를 사용했고 title,content,author,password는 body로 요청을 보냈다.  
-삭제도 id는 query를 사용했고 password는 body로 요청을 보냈다.       
+삭제도 id는 query를 사용했고 password는 body로 요청을 보냈다.  
+         
 2.  어떤 상황에 어떤 방식의 request를 써야하나요?
 
 POST 요청을 보낼때는 body에 담아서 전송하고 GET은 param으로 전송했다. 
 PUT과 DELETE는 password를 body에 담아서 전송하고 id는 param으로 전송했다.
+        
 3.  RESTful한 API를 설계했나요? 어떤 부분이 그런가요? 어떤 부분이 그렇지 않나요?
 
 CRUD를 구현하는데 각각 적절한 Http Method를 사용하였다. 
 URL도 api/post/ 경로에 필요하면 id값을 pathVariable로 받았다.  
 데이터는 모두 JSON으로 반환하기는 했지만 좋은 코드라고는 생각하지 않는다.  
-원하는 값만 반환하려고 하다보니 코드가 직관적이지 못하다.          
+원하는 값만 반환하려고 하다보니 코드가 직관적이지 못하다.              
+       
 4.  적절한 관심사 분리를 적용하였나요? (Controller, Repository, Service)   
-
+  
 Controller는 요청이 들어오면 필요한 로직을 Service로 위임했고 Service는 유효성 검사를 거친뒤 Repository의 정보를 수정했다.       
-그리고 필요한 데이터만 Controller에게 넘겨주기 위해 Dto를 사용해서 Controller에게 반환했다.          
+그리고 필요한 데이터만 Controller에게 넘겨주기 위해 Dto를 사용해서 Controller에게 반환했다.      
+     
 5.  API 명세서 작성 가이드라인을 검색하여 직접 작성한 API 명세서와 비교해보세요!     
-
+  
 검색해보니 항해에서 제공한 명세서 가이드와 유사하다.  
 다만 나는 테이블에 코드를 못넣어서 따로 넣었는데 그 부분이 아쉽다. 
