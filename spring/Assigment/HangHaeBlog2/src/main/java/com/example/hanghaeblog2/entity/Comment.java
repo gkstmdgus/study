@@ -21,14 +21,24 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Column
     private String author;
 
     @Column
     private String content;
 
-    public Comment(CommentRequestDto requestDto, Post post) {
+    public Comment(CommentRequestDto requestDto, Post post, Member member) {
         this.post = post;
+        this.member = member;
+        this.author = requestDto.getAuthor();
+        this.content = requestDto.getContent();
+    }
+
+    public void update(CommentRequestDto requestDto) {
         this.author = requestDto.getAuthor();
         this.content = requestDto.getContent();
     }

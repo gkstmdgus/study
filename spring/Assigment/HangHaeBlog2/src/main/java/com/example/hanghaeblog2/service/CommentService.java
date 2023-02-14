@@ -5,6 +5,7 @@ import com.example.hanghaeblog2.dto.CommentResponseDto;
 import com.example.hanghaeblog2.entity.Comment;
 import com.example.hanghaeblog2.entity.Member;
 import com.example.hanghaeblog2.entity.Post;
+import com.example.hanghaeblog2.entity.UserRole;
 import com.example.hanghaeblog2.jwt.JwtUtil;
 import com.example.hanghaeblog2.repository.CommentRepository;
 import com.example.hanghaeblog2.repository.MemberRepository;
@@ -33,7 +34,7 @@ public class CommentService {
                 () -> new IllegalArgumentException("등록된 게시글이 없습니다.")
         );
         // 등록
-        Comment comment = new Comment(requestDto, post);
+        Comment comment = new Comment(requestDto, post, member);
         commentRepository.save(comment);
         return new CommentResponseDto(comment);
     }
@@ -59,5 +60,22 @@ public class CommentService {
             return null;
         }
         return member;
+    }
+
+    @Transactional
+    public CommentResponseDto updateComment(HttpServletRequest request, CommentRequestDto requestDto, Long comment) {
+        // 토큰 검사
+        Member member = checkTokenValidation(request);
+        // 댓글 유무 확인
+        Comment findComment = commentRepository.findById(comment).orElseThrow(
+                () -> new IllegalArgumentException("댓글이 존재하지 않습니다.")
+        );
+        // 권한 확인 후 가능 업데이트
+        if(member.getRole() == UserRole.ADMIN || member.getId() == findComment.getMember().getId()) {
+            findComment.update(requestDto);
+        } else {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+        return new CommentResponseDto(findComment);
     }
 }
