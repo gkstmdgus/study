@@ -1,4 +1,4 @@
-package com.example.myselectshopbeta.naver.controller;
+package com.example.myselectshopbeta.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

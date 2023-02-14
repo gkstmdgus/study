@@ -1,4 +1,4 @@
-package com.example.myselectshopbeta.naver.entity;
+package com.example.myselectshopbeta.entity;
 
 import com.example.myselectshopbeta.dto.ProductRequestDto;
 import lombok.Getter;

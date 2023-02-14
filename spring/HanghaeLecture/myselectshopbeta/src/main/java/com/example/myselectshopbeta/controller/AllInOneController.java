@@ -1,4 +1,4 @@
-package com.example.myselectshopbeta.naver.controller;
+package com.example.myselectshopbeta.controller;
 
 import com.example.myselectshopbeta.dto.ProductMypriceRequestDto;
 import com.example.myselectshopbeta.dto.ProductRequestDto;
@@ -124,5 +124,6 @@ public class AllInOneController {
         // 응답 보내기 (업데이트된 상품 id)
         return product.getId();
     }
+
 
 }

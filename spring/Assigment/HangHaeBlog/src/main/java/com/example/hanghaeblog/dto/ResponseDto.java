@@ -35,6 +35,7 @@ public class ResponseDto {
             this.success = success;
         }
     }
+
     @Getter
     public static class id {
         private Long id;
