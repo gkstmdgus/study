@@ -2,6 +2,7 @@ package com.example.hanghaeblog2.controller;
 
 import com.example.hanghaeblog2.dto.CommentRequestDto;
 import com.example.hanghaeblog2.dto.CommentResponseDto;
+import com.example.hanghaeblog2.dto.statusResponseDto;
 import com.example.hanghaeblog2.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,5 +23,10 @@ public class CommentController {
     @PutMapping("/comment/{comment}")
     public CommentResponseDto updateComment(HttpServletRequest request, @RequestBody CommentRequestDto requestDto, @PathVariable Long comment) {
         return commentService.updateComment(request,requestDto,comment);
+    }
+
+    @DeleteMapping("/comment/{comment}")
+    public statusResponseDto deleteComment(HttpServletRequest request, @PathVariable Long comment) {
+        return commentService.deleteService(request, comment);
     }
 }

@@ -2,6 +2,7 @@ package com.example.hanghaeblog2.service;
 
 import com.example.hanghaeblog2.dto.CommentRequestDto;
 import com.example.hanghaeblog2.dto.CommentResponseDto;
+import com.example.hanghaeblog2.dto.statusResponseDto;
 import com.example.hanghaeblog2.entity.Comment;
 import com.example.hanghaeblog2.entity.Member;
 import com.example.hanghaeblog2.entity.Post;
@@ -12,6 +13,7 @@ import com.example.hanghaeblog2.repository.MemberRepository;
 import com.example.hanghaeblog2.repository.PostRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final JwtUtil jwtUtil;
 
+    // 댓글 등록
     @Transactional
     public CommentResponseDto postComment(CommentRequestDto requestDto, HttpServletRequest request, Long id) {
         //토큰 검사
@@ -37,6 +40,22 @@ public class CommentService {
         Comment comment = new Comment(requestDto, post, member);
         commentRepository.save(comment);
         return new CommentResponseDto(comment);
+    }
+
+    // 댓글 수정
+    @Transactional
+    public CommentResponseDto updateComment(HttpServletRequest request, CommentRequestDto requestDto, Long comment) {
+        Comment checkedComment = commentValidation(request, comment);
+        checkedComment.update(requestDto);
+        return new CommentResponseDto(checkedComment);
+    }
+
+    // 댓글 삭제
+    @Transactional
+    public statusResponseDto deleteService(HttpServletRequest request, Long comment) {
+        Comment checkedComment = commentValidation(request, comment);
+        commentRepository.delete(checkedComment);
+        return new statusResponseDto("댓글 삭제 성공", HttpStatus.OK);
     }
 
     // 토큰 유효성 / 아이디 유무 검사
@@ -62,20 +81,19 @@ public class CommentService {
         return member;
     }
 
-    @Transactional
-    public CommentResponseDto updateComment(HttpServletRequest request, CommentRequestDto requestDto, Long comment) {
+    // 댓글 유효성 검사
+    private Comment commentValidation(HttpServletRequest request, Long comment) {
         // 토큰 검사
         Member member = checkTokenValidation(request);
         // 댓글 유무 확인
         Comment findComment = commentRepository.findById(comment).orElseThrow(
                 () -> new IllegalArgumentException("댓글이 존재하지 않습니다.")
         );
-        // 권한 확인 후 가능 업데이트
-        if(member.getRole() == UserRole.ADMIN || member.getId() == findComment.getMember().getId()) {
-            findComment.update(requestDto);
-        } else {
+        // 권한 확인
+        if(!(member.getRole() == UserRole.ADMIN || member.getId() == findComment.getMember().getId())) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
-        return new CommentResponseDto(findComment);
+        return findComment;
     }
+
 }
