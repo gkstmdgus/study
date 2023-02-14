@@ -3,12 +3,14 @@ package com.example.hanghaeblog2.service;
 import com.example.hanghaeblog2.dto.statusResponseDto;
 import com.example.hanghaeblog2.dto.PostRequestDto;
 import com.example.hanghaeblog2.dto.PostResponseDto;
+import com.example.hanghaeblog2.entity.Comment;
 import com.example.hanghaeblog2.entity.Member;
 import com.example.hanghaeblog2.entity.Post;
 import com.example.hanghaeblog2.entity.UserRole;
 import com.example.hanghaeblog2.exception.customException.AuthorityException;
 import com.example.hanghaeblog2.exception.customException.TokenException;
 import com.example.hanghaeblog2.jwt.JwtUtil;
+import com.example.hanghaeblog2.repository.CommentRepository;
 import com.example.hanghaeblog2.repository.MemberRepository;
 import com.example.hanghaeblog2.repository.PostRepository;
 import io.jsonwebtoken.Claims;
@@ -27,6 +29,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
+    private final CommentRepository commentRepository;
 
     // 게시글 등록
     @Transactional
@@ -46,7 +49,7 @@ public class PostService {
         List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
         List<PostResponseDto> postDto = new ArrayList<>();
         for (Post post : posts) {
-            postDto.add(new PostResponseDto(post));
+            postDto.add(new PostResponseDto(post, commentRepository.findCommentByPostOrderByCreatedAtDesc(post)));
         }
         return postDto;
     }
@@ -55,7 +58,7 @@ public class PostService {
     @Transactional
     public PostResponseDto getPost(Long id) {
         Post post = checkIdHasPost(id);
-        return new PostResponseDto(post);
+        return new PostResponseDto(post, post.getComments());
     }
 
     // 게시글 변경

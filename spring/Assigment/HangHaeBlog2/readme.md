@@ -45,12 +45,12 @@
 	- [x] 헤더에 성공 메시지, 상태코드와 함께 반환하기  
 
 ## lv.3 요구사항 추가  
-- [ ] 회원 권한 부여하기(ADMIN,USER) - ADMIN회원은 모든 게시글, 댓글 수정/삭제 가능  
+- [x] 회원 권한 부여하기(ADMIN,USER) - ADMIN회원은 모든 게시글, 댓글 수정/삭제 가능  
 	- [x] 회원가입시 어드민 / 유저 멤버에 입력  
 	- [x] 댓글 수정 / 삭제  
-	- [ ] 게시글 수정 / 삭제  
-		- [ ] 멤버에서 userRole 가져오기  
-		- [ ] Admin이면 AllPass  
+	- [x] 게시글 수정 / 삭제  
+		- [x] 멤버에서 userRole 가져오기  
+		- [x] Admin이면 AllPass  
 
 ## 요구 수정사항 API 명세서  
 | 기능             | URL | Method | Request Header | Request | Response | Response Header |
@@ -62,7 +62,7 @@
 | 게시글 삭제 |  /api/post/{id}   |  DELETE  | Bearer eyJhbGciOiJIU</br>zI1NiJ9.eyJzdWIiOiJiaW4</br>xMjM0IiwiZXhwIjoxNjc2MT</br>gzMzQwLCJpYXQiOjE2NzYxN</br>zk3NDB9.LVPP_5QIi5defwn1</br>QX10mmtwA6RlnsrHJVy_z6cBKIg |         |  {</br> "msg": "게시글 삭제 성공",</br> "statusCode": 200 </br>}  |                 |
 
 ## ERD  
-![ERD.png](./ERD.png)  
+![ERD2.png](./ERD.png)  
 
 ## 요구 수정사항 체크리스트  
 - [x]  전체 게시글 목록 조회 API 
@@ -83,7 +83,8 @@
 
 
 ## 트러블 슈팅  
-1. @RequestBody 없으면 null 값 저장
+1. @RequestBody 없으면 null 값 저장  
+2. RestControllerAdvice
 
 ## 미해결  
 - [x] findByUsername ?  
@@ -107,11 +108,11 @@
 	- [x] 토큰을 검사하여 유효한 토큰일 경우, 해당 사용자일 경우 삭제 가능  
 	- [x] 댓글의 DB 저장 유무  
 	- [x] 댓글이 있다면 삭제하고 성공 메시지, 상태코드 반환  
-- [ ] 예외처리  
-	- [ ] 토큰 x 또는 정상 토큰이 아닌 경우 "토큰이 유효하지 않습니다." 라는 에러메시지와 statusCode: 400  
-	- [ ] 토큰 o, 유효하지만 해당 사용자의 글이 아닌경우 “작성자만 삭제/수정할 수 있습니다.”라는 에러메시지와 statusCode: 400  
-	- [ ] 이미 존재하는 username으로 회원가입 하는 경우 "중복된 username 입니다." 라는 에러메시지와 statusCode: 400  
-	- [ ] 로그인시 username과 password가 맞지 않다면 "회원을 찾을 수 없습니다."라는 에러메시지와 statusCode: 400을 Client  
+- [x] 예외처리  
+	- [x] 토큰 x 또는 정상 토큰이 아닌 경우 "토큰이 유효하지 않습니다." 라는 에러메시지와 statusCode: 400  
+	- [x] 토큰 o, 유효하지만 해당 사용자의 글이 아닌경우 “작성자만 삭제/수정할 수 있습니다.”라는 에러메시지와 statusCode: 400  
+	- [x] 이미 존재하는 username으로 회원가입 하는 경우 "중복된 username 입니다." 라는 에러메시지와 statusCode: 400  
+	- [x] 로그인시 username과 password가 맞지 않다면 "회원을 찾을 수 없습니다."라는 에러메시지와 statusCode: 400을 Client  
 
 
 ## lv.3 요구사항 API 명세서  
@@ -121,18 +122,11 @@
 | 댓글 수정 | /api/comment/{comment} | PUT    | Bearer eyJhbGciOiJIU</br>zI1NiJ9.eyJzdWIiOiJiaW4</br>xMjM0IiwiZXhwIjoxNjc2MT</br>gzMzQwLCJpYXQiOjE2NzYxN</br>zk3NDB9.LVPP_5QIi5defwn1</br>QX10mmtwA6RlnsrHJVy_z6cBKIg | {</br>"author" : "author",</br> "content", "content"</br>} | {</br>"comment", "comment",</br>"author" : "author",</br> "content", "content"</br>}                           |                 |
 | 댓글 삭제 | /api/comment/{comment} | DELETE | Bearer eyJhbGciOiJIU</br>zI1NiJ9.eyJzdWIiOiJiaW4</br>xMjM0IiwiZXhwIjoxNjc2MT</br>gzMzQwLCJpYXQiOjE2NzYxN</br>zk3NDB9.LVPP_5QIi5defwn1</br>QX10mmtwA6RlnsrHJVy_z6cBKIg |                                                            | {</br> "msg": "게시글 삭제 성공",</br> "statusCode": 200 </br>}                      |                 |
 
+## lv.3 수정사항  
+- [x] 전체 게시글 조회  
+	- [x] 각각의 게시글이 등록된 모든 댓글을 게시글과 같이 Client에 반환하기  
+	- [x] 댓글은 작성 날짜 기준 내림차순으로 정렬하기  
+- [x] 선택한 게시글 조회  
+	- [x] 선택한 게시글에 등록된 모든 댓글을 선택한 게시글과 같이 Client에 반환하기  
+	- [x] 댓글은 작성 날짜 기준 내림차순으로 정렬하기  
 
-## 미해결  
-comment와 member와의 관계  
-
-
-
-
-bin14   
-Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaW4xNCIsImV4cCI6MTY3NjM1NDk2NywiaWF0IjoxNjc2MzUxMzY3fQ.ki6lwVZ0gcoRD7LnZmxMOEV_IFM79EyU44sK9L8tO_I
-
-bin33  
-Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaW4zMyIsImV4cCI6MTY3NjM1NDk4OCwiaWF0IjoxNjc2MzUxMzg4fQ.L-7lNomss4rbAps_yDbt7nZOtvei7xM_kch7-4MwWWQ  
-
-admin  
-Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY3NjM1NTExOSwiaWF0IjoxNjc2MzUxNTE5fQ.5WukhZ8C1W_8lGFvRTKMNKXb7Xb1Zp28dvZRUnEEbj4

@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Comment {
+public class Comment extends TimeStamped {
     @Id
     @GeneratedValue
     @Column(name = "comment_id")
