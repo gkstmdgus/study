@@ -7,6 +7,8 @@ import com.example.hanghaeblog2.entity.Comment;
 import com.example.hanghaeblog2.entity.Member;
 import com.example.hanghaeblog2.entity.Post;
 import com.example.hanghaeblog2.entity.UserRole;
+import com.example.hanghaeblog2.exception.customException.AuthorityException;
+import com.example.hanghaeblog2.exception.customException.TokenException;
 import com.example.hanghaeblog2.jwt.JwtUtil;
 import com.example.hanghaeblog2.repository.CommentRepository;
 import com.example.hanghaeblog2.repository.MemberRepository;
@@ -29,7 +31,7 @@ public class CommentService {
 
     // 댓글 등록
     @Transactional
-    public CommentResponseDto postComment(CommentRequestDto requestDto, HttpServletRequest request, Long id) {
+    public CommentResponseDto postComment(CommentRequestDto requestDto, HttpServletRequest request, Long id) throws TokenException {
         //토큰 검사
         Member member = checkTokenValidation(request);
         // 게시글 DB 유무 확인
@@ -59,7 +61,7 @@ public class CommentService {
     }
 
     // 토큰 유효성 / 아이디 유무 검사
-    public Member checkTokenValidation(HttpServletRequest request) {
+    public Member checkTokenValidation(HttpServletRequest request) throws TokenException {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
         Member member;
@@ -69,7 +71,7 @@ public class CommentService {
             if (jwtUtil.validateToken(token)) {
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
-                throw new IllegalArgumentException("Token Error");
+                throw new TokenException("Token Error");
             }
             // 토큰으로 아이디 가져오기
             member = memberRepository.findByUsername(claims.getSubject()).orElseThrow(
@@ -91,7 +93,7 @@ public class CommentService {
         );
         // 권한 확인
         if(!(member.getRole() == UserRole.ADMIN || member.getId() == findComment.getMember().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AuthorityException("권한이 없습니다.");
         }
         return findComment;
     }

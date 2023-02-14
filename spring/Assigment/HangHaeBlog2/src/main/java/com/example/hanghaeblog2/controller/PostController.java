@@ -3,6 +3,7 @@ package com.example.hanghaeblog2.controller;
 import com.example.hanghaeblog2.dto.statusResponseDto;
 import com.example.hanghaeblog2.dto.PostRequestDto;
 import com.example.hanghaeblog2.dto.PostResponseDto;
+import com.example.hanghaeblog2.exception.customException.TokenException;
 import com.example.hanghaeblog2.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
