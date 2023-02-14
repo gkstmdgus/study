@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
     private final JwtUtil jwtUtil;
 
     @Transactional

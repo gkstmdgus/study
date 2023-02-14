@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class Comment {
     @Id
     @GeneratedValue
-    @Column(name = "id")
+    @Column(name = "comment_id")
     private Long comment;
 
     @ManyToOne
