@@ -1,10 +1,7 @@
 package com.example.hanghaeblog2.exception;
 
 import com.example.hanghaeblog2.dto.statusResponseDto;
-import com.example.hanghaeblog2.exception.customException.AuthorityException;
-import com.example.hanghaeblog2.exception.customException.DuplicatedIdException;
-import com.example.hanghaeblog2.exception.customException.TokenException;
-import com.example.hanghaeblog2.exception.customException.UnknownException;
+import com.example.hanghaeblog2.exception.customException.*;
 import io.jsonwebtoken.security.SignatureException;
 import org.apache.tomcat.util.http.ResponseUtil;
 import org.springframework.http.HttpStatus;
@@ -50,6 +47,18 @@ public class exceptionHandler {
     @ExceptionHandler(value = UnknownException.class)
     public statusResponseDto UnknownException(Exception e) {
         return new statusResponseDto("회원을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST);
+    }
+
+    // 등록된 자료가 없어요  NoPostException
+    @ExceptionHandler(value = NoPostException.class)
+    public statusResponseDto NoPostException(Exception e) {
+        return new statusResponseDto("등록된 자료가 없습니다.", HttpStatus.BAD_REQUEST);
+    }
+
+    // 입력 값이 적합하지 않아요  InvalidValueException
+    @ExceptionHandler(value = InvalidValueException.class)
+    public statusResponseDto InvalidValueException(Exception e) {
+        return new statusResponseDto("입력 값이 적합하지 않습니다.", HttpStatus.BAD_REQUEST);
     }
 
 }

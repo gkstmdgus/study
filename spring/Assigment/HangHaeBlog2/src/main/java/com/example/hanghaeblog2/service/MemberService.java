@@ -4,6 +4,7 @@ import com.example.hanghaeblog2.dto.MemberRequestDto;
 import com.example.hanghaeblog2.dto.statusResponseDto;
 import com.example.hanghaeblog2.entity.Member;
 import com.example.hanghaeblog2.exception.customException.DuplicatedIdException;
+import com.example.hanghaeblog2.exception.customException.InvalidValueException;
 import com.example.hanghaeblog2.exception.customException.UnknownException;
 import com.example.hanghaeblog2.jwt.JwtUtil;
 import com.example.hanghaeblog2.repository.MemberRepository;
@@ -31,11 +32,11 @@ public class MemberService {
         }
         // 아이디 검사
         if(4 > username.length() || username.length() > 10 || username.replaceAll("[0-9a-z]","").length() != 0) {
-            throw new IllegalArgumentException("아이디가 적합하지 않습니다.");
+            throw new InvalidValueException("아이디가 적합하지 않습니다.");
         }
         // 비밀번호 검사
         if(8 > password.length() || password.length() > 15 || password.replaceAll("[0-9a-zA-Z]","").length() != 0)
-            throw new IllegalArgumentException("비밀번호가 적합하지 않습니다.");
+            throw new InvalidValueException("비밀번호가 적합하지 않습니다.");
         Member member = new Member(memberRequestDto);
         memberRepository.save(member);
         return new statusResponseDto("회원가입 성공", HttpStatus.OK);
@@ -59,6 +60,6 @@ public class MemberService {
     public void checkIdValidation(String id) {
         // 길이 검사 && 문자 검사
         if(4 > id.length() || id.length() > 10 || id.replaceAll("[0-9a-z]","").length() != 0)
-            throw new IllegalArgumentException("아이디가 적합하지 않습니다.");
+            throw new InvalidValueException("아이디가 적합하지 않습니다.");
     }
 }

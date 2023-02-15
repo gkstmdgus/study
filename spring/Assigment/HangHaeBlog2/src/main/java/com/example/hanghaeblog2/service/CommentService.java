@@ -8,7 +8,9 @@ import com.example.hanghaeblog2.entity.Member;
 import com.example.hanghaeblog2.entity.Post;
 import com.example.hanghaeblog2.entity.UserRole;
 import com.example.hanghaeblog2.exception.customException.AuthorityException;
+import com.example.hanghaeblog2.exception.customException.NoPostException;
 import com.example.hanghaeblog2.exception.customException.TokenException;
+import com.example.hanghaeblog2.exception.customException.UnknownException;
 import com.example.hanghaeblog2.jwt.JwtUtil;
 import com.example.hanghaeblog2.repository.CommentRepository;
 import com.example.hanghaeblog2.repository.MemberRepository;
@@ -36,7 +38,7 @@ public class CommentService {
         Member member = checkTokenValidation(request);
         // 게시글 DB 유무 확인
         Post post = postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("등록된 게시글이 없습니다.")
+                () -> new NoPostException("등록된 게시글이 없습니다.")
         );
         // 등록
         Comment comment = new Comment(requestDto, post, member);
@@ -75,7 +77,7 @@ public class CommentService {
             }
             // 토큰으로 아이디 가져오기
             member = memberRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+                    () -> new UnknownException("아이디가 존재하지 않습니다.")
             );
         } else {
             return null;
@@ -89,7 +91,7 @@ public class CommentService {
         Member member = checkTokenValidation(request);
         // 댓글 유무 확인
         Comment findComment = commentRepository.findById(comment).orElseThrow(
-                () -> new IllegalArgumentException("댓글이 존재하지 않습니다.")
+                () -> new NoPostException("댓글이 존재하지 않습니다.")
         );
         // 권한 확인
         if(!(member.getRole() == UserRole.ADMIN || member.getId() == findComment.getMember().getId())) {

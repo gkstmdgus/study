@@ -8,7 +8,9 @@ import com.example.hanghaeblog2.entity.Member;
 import com.example.hanghaeblog2.entity.Post;
 import com.example.hanghaeblog2.entity.UserRole;
 import com.example.hanghaeblog2.exception.customException.AuthorityException;
+import com.example.hanghaeblog2.exception.customException.NoPostException;
 import com.example.hanghaeblog2.exception.customException.TokenException;
+import com.example.hanghaeblog2.exception.customException.UnknownException;
 import com.example.hanghaeblog2.jwt.JwtUtil;
 import com.example.hanghaeblog2.repository.CommentRepository;
 import com.example.hanghaeblog2.repository.MemberRepository;
@@ -95,7 +97,7 @@ public class PostService {
             }
             // 토큰으로 아이디 가져오기
             member = memberRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+                    () -> new UnknownException("아이디가 존재하지 않습니다.")
             );
         } else {
             return null;
@@ -107,7 +109,7 @@ public class PostService {
     public Post checkUpdate(Member member, Long id) {
         // id로 게시글 찾기 (유무 확인)
         Post post = postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+                () -> new NoPostException("게시글이 존재하지 않습니다.")
         );
         // 권한 확인
         if (!(member.getRole() == UserRole.ADMIN || member.getId() == post.getMember().getId())) {
@@ -119,7 +121,7 @@ public class PostService {
     // 아이디에 맞는 게시글이 있는 검사
     public Post checkIdHasPost(Long id) {
         return postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+                () -> new NoPostException("게시글이 존재하지 않습니다.")
         );
     }
 
