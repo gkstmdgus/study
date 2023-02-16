@@ -10,15 +10,15 @@ import javax.persistence.*;
 @Setter
 public class Address {
     private String city;
-    private String zipCode;
+    private String zipcode;
     private String street;
 
     protected Address() {
     }
 
-    public Address(String city, String zipCode, String street) {
+    public Address(String city, String zipcode, String street) {
         this.city = city;
-        this.zipCode = zipCode;
+        this.zipcode = zipcode;
         this.street = street;
     }
 }
