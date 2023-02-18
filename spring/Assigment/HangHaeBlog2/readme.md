@@ -130,3 +130,89 @@
 	- [x] 선택한 게시글에 등록된 모든 댓글을 선택한 게시글과 같이 Client에 반환하기  
 	- [x] 댓글은 작성 날짜 기준 내림차순으로 정렬하기  
 
+## lv.4 요구 사항  
+
+- [x] 게시글 작성  
+- [x] 게시글 수정  
+- [x] 게시글 삭제  
+	- [x] Spring Security로 토큰 검사 및 인증하기  
+ 
+## 로그인 없이 접근 허용 범위  
+- /api/auth/**
+- /api/post/**, GET
+
+## API 명세서  
+lv.2랑 같음  
+
+| 기능             | URL            | Method | Request Header                                                                                                                                                        | Request                                                   | Response                                                                                                                                                                                                                                                                                                                                                                                                                     | Response Header |
+| ---------------- | -------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| 게시글 작성      | /api/post      | POST   | Bearer eyJhbGciOiJIU</br>zI1NiJ9.eyJzdWIiOiJiaW4</br>xMjM0IiwiZXhwIjoxNjc2MT</br>gzMzQwLCJpYXQiOjE2NzYxN</br>zk3NDB9.LVPP_5QIi5defwn1</br>QX10mmtwA6RlnsrHJVy_z6cBKIg | { </br>"title": "게시글5", </br>"content": "내용5" </br>} | { </br>"id": 5,</br> "title": "게시글5",</br> "content": "내용5", </br>"username": "bin1234", </br>"createdAt": "2022-12-01T12:56:36.821474",</br>"modifiedAt": "2022-12-01T12:56:36.821474" </br>}                                                                                                                                                                                                                          |                 |
+| 게시글 목록 조회 | /api/post      | GET    |                                                                                                                                                                       |                                                           | {</br>{ </br>"id": 5, </br>"title": "게시글5", </br>"content": "내용5",</br> "username": "bin1234", </br>"createdAt": "2022-12-01T12:56:36.821474", </br>"modifiedAt": "2022-12-01T12:56:36.821474" </br>} </br>,{ </br>"id": 5, </br>"title": "게시글5", </br>"content": "내용5", </br>"username": "bin1234", </br>"createdAt": "2022-12-01T12:56:36.821474", </br>"modifiedAt": "2022-12-01T12:56:36.821474" </br>}</br> } |                 |
+| 게시글 상세 조회 | /api/post/{id} | GET    |                                                                                                                                                                       |                                                           | { </br>"id": 5, </br>"title": "게시글5",</br> "content": "내용5",</br> "username": "bin1234",</br> "createdAt": "2022-12-01T12:56:36.821474",</br> "modifiedAt": "2022-12-01T12:56:36.821474" </br>}                                                                                                                                                                                                                         |                 |
+| 게시글 수정      | /api/post/{id} | PUT    | Bearer eyJhbGciOiJIU</br>zI1NiJ9.eyJzdWIiOiJiaW4</br>xMjM0IiwiZXhwIjoxNjc2MT</br>gzMzQwLCJpYXQiOjE2NzYxN</br>zk3NDB9.LVPP_5QIi5defwn1</br>QX10mmtwA6RlnsrHJVy_z6cBKIg | {</br> "title": "게시글5", </br>"content": "내용5" </br>} | {</br> "id": 5, </br>"title": "게시글5", </br>"content": "내용5", </br>"username": "bin1234", </br>"createdAt": "2022-12-01T12:56:36.821474", </br>"modifiedAt": "2022-12-01T12:56:36.821474" </br>}                                                                                                                                                                                                                         |                 |
+| 게시글 삭제      | /api/post/{id} | DELETE | Bearer eyJhbGciOiJIU</br>zI1NiJ9.eyJzdWIiOiJiaW4</br>xMjM0IiwiZXhwIjoxNjc2MT</br>gzMzQwLCJpYXQiOjE2NzYxN</br>zk3NDB9.LVPP_5QIi5defwn1</br>QX10mmtwA6RlnsrHJVy_z6cBKIg |                                                           | {</br> "msg": "게시글 삭제 성공",</br> "statusCode": 200 </br>}                                                                                                                                                                                                                                                                                                                                                              |                 |
+
+## 문제점  
+- [x] 예외 처리  
+	- [x] 원래는 Controller로 예외가 던져졌지만 Security 설정 후 필터가 예외를 받아서 핸들링이 안되는 것으로 추정 
+	- [x] 토큰 인증과정을 서비스에서 필터로 이동했기 때문   
+	- [x] 필터에서 예외 처리 하기  
+- [x] 댓글 달린 게시글은 삭제가 안됨   
+	- [x] PK소유 엔티티(Post)에 CascadeType.REMOVE 설정으로 해결
+
+## 공부할 내용  
+- [x] 흐름 정리하기  
+- [x] 필터 안에서의 예외 처리
+
+### 흐름  
+- JwtAuthFilter를 UsernamePasswordAuthenticationFilter이전에 실행  
+- JwtAuthFilter
+	- response에서 Token을 추출해서 유효성 검사  
+		- 유효하지 않으면 에러코드 응답에 입력  
+	- 토큰에서 username을 가져와서 SecurityContextHolder 생성  
+- SecurityContextHolder
+	- username을 가지고 UserDetails 객체 생성  
+		- UseDetailsService  
+			- 아이디 유효성 검사  
+			- UserDetails객체 생성해서 return  
+	- JwtUtil에서 principle, credentials, authorities를 담은 UsernamePasswordAuthenticationToken 생성 후 반환  
+		- authorities는 userDetails.getAuthorities()을 통해서 입력  
+	- 반환된 Authentication(UsernamePasswordAuthenticationToken)을 Context에 저장  
+
+
+### 예외 처리 (응답)
+```java
+private void jwtExceptionHandler(
+	HttpServletResponse response, 
+	String tokenError, HttpStatus value
+) {  
+    response.setStatus(value.value());  
+    response.setContentType("application/json");  
+    try {  
+        String json = new ObjectMapper()
+        .writeValueAsString(new statusResponseDto(
+        tokenError, value));  
+        response.getWriter().write(json);  
+    } catch (Exception e) {  
+        log.error(e.getMessage());  
+    }  
+}
+```
+
+> ObjectMapper()  
+
+Jackson 라이브러리에서 제공하는 클래스.  
+주요기능은 JSON <-> Java Object 변환
+```java
+String json = new ObjectMapper()
+.writeValueAsString(new statusResponseDto(tokenError, value));  
+// statusResponseDto를 JSON으로 변환  
+```
+
+> response.getWrite().write(json) 
+
+String으로 반환한 JSON을 응답 바디부에 입력  
+`response.setContentType("application/json")` 필수  
+
+### 정리
+응답 헤더에 상태, 타입을 입력하고 응답Dto를 JSON타입의 String으로 바꾸고 응답 바디에 입력  
