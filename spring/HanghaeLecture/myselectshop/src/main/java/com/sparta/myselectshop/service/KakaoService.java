@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.myselectshop.dto.KakaoUserInfoDto;
 import com.sparta.myselectshop.entity.User;
 import com.sparta.myselectshop.entity.UserRoleEnum;
+import com.sparta.myselectshop.exception.ErrorCode;
 import com.sparta.myselectshop.jwt.JwtUtil;
 import com.sparta.myselectshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
