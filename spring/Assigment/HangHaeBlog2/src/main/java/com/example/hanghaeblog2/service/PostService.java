@@ -14,6 +14,7 @@ import com.example.hanghaeblog2.jwt.JwtUtil;
 import com.example.hanghaeblog2.repository.CommentRepository;
 import com.example.hanghaeblog2.repository.MemberRepository;
 import com.example.hanghaeblog2.repository.PostRepository;
+import com.example.hanghaeblog2.security.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,9 +37,11 @@ public class PostService {
 
     // 게시글 등록
     @Transactional
-    public PostResponseDto postContent(PostRequestDto requestDto, HttpServletRequest request){
+    public PostResponseDto postContent(PostRequestDto requestDto, String username){
         // 토큰 검사
-        Member member = jwtUtil.checkTokenValidation(request);
+//        Member member = jwtUtil.checkTokenValidation(request);
+        // member 반환
+        Member member = memberRepository.findByUsername(username).orElseThrow(UnknownException::new);
         // 내용 저장
         Post post = new Post(requestDto,member);
         postRepository.save(post);
@@ -66,9 +69,11 @@ public class PostService {
 
     // 게시글 변경
     @Transactional
-    public PostResponseDto changePost(PostRequestDto requestDto, HttpServletRequest request, Long id) {
+    public PostResponseDto changePost(PostRequestDto requestDto, String username, Long id) {
         // 토큰 유효성
-        Member member = jwtUtil.checkTokenValidation(request);
+//        Member member = jwtUtil.checkTokenValidation(request);
+        // 멤버 찾기
+        Member member = memberRepository.findByUsername(username).orElseThrow(UnknownException::new);
         // 게시글 유효성
         Post post = checkUpdate(member,id);
         // 업데이트
@@ -78,9 +83,11 @@ public class PostService {
 
     // 게시글 삭제
     @Transactional
-    public statusResponseDto deletePost(HttpServletRequest request, Long id) {
+    public statusResponseDto deletePost(String username, Long id) {
         // 토큰 유효성
-        Member member = jwtUtil.checkTokenValidation(request);
+//        Member member = jwtUtil.checkTokenValidation(request);
+        // 멤버 찾기
+        Member member = memberRepository.findByUsername(username).orElseThrow(UnknownException::new);
         // 게시글 유효성
         Post post = checkUpdate(member, id);
         // 업데이트

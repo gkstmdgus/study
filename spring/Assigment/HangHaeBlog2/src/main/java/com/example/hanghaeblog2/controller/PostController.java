@@ -3,8 +3,10 @@ package com.example.hanghaeblog2.controller;
 import com.example.hanghaeblog2.dto.response.statusResponseDto;
 import com.example.hanghaeblog2.dto.request.PostRequestDto;
 import com.example.hanghaeblog2.dto.response.PostResponseDto;
+import com.example.hanghaeblog2.security.UserDetailsImpl;
 import com.example.hanghaeblog2.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,19 +32,19 @@ public class PostController {
 
     // 게시글 수정
     @PutMapping("/post/{id}")
-    public PostResponseDto changePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, HttpServletRequest request) {
-        return postService.changePost(requestDto, request, id);
+    public PostResponseDto changePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.changePost(requestDto, userDetails.getUsername(), id);
     }
 
     // 게시글 등록
     @PostMapping("/post")
-    public PostResponseDto postContent(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
-        return postService.postContent(requestDto, request);
+    public PostResponseDto postContent(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.postContent(requestDto, userDetails.getUsername());
     }
 
     // 게시글 삭제
     @DeleteMapping("/post/{id}")
-    public statusResponseDto deletePost(@PathVariable Long id, HttpServletRequest request) {
-        return postService.deletePost(request, id);
+    public statusResponseDto deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.deletePost(userDetails.getUsername(), id);
     }
 }
