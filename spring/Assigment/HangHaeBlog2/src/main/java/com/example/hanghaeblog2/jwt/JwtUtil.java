@@ -84,6 +84,8 @@ public class JwtUtil {
             log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
             log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+        } catch (Exception e) {
+            log.info("Token Error");
         }
         return false;
     }
