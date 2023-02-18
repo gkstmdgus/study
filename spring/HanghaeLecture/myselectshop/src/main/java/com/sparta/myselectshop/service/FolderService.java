@@ -14,6 +14,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,14 +33,12 @@ public class FolderService {
     // 로그인한 회원에 폴더들 등록
     @Transactional
     public List<Folder> addFolders(List<String> folderNames, String name) {
-
         User user = userRepository.findByUsername(name).orElseThrow(
                 () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
         );
 
         // 입력으로 들어온 폴더 이름을 기준으로, 회원이 이미 생성한 폴더들을 조회합니다.
         List<Folder> existFolderList = folderRepository.findAllByUserAndNameIn(user, folderNames);
-
         List<Folder> folderList = new ArrayList<>();
 
         for (String folderName : folderNames) {
