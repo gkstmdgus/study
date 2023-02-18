@@ -1,9 +1,8 @@
 package com.example.hanghaeblog2.entity;
 
-import com.example.hanghaeblog2.dto.PostRequestDto;
+import com.example.hanghaeblog2.dto.request.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;

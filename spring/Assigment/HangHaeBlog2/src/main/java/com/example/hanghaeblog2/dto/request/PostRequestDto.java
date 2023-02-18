@@ -1,4 +1,4 @@
-package com.example.hanghaeblog2.dto;
+package com.example.hanghaeblog2.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

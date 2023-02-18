@@ -1,6 +1,6 @@
 package com.example.hanghaeblog2.entity;
 
-import com.example.hanghaeblog2.dto.MemberRequestDto;
+import com.example.hanghaeblog2.dto.request.MemberRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -1,9 +1,8 @@
 package com.example.hanghaeblog2.service;
 
-import com.example.hanghaeblog2.dto.statusResponseDto;
-import com.example.hanghaeblog2.dto.PostRequestDto;
-import com.example.hanghaeblog2.dto.PostResponseDto;
-import com.example.hanghaeblog2.entity.Comment;
+import com.example.hanghaeblog2.dto.response.statusResponseDto;
+import com.example.hanghaeblog2.dto.request.PostRequestDto;
+import com.example.hanghaeblog2.dto.response.PostResponseDto;
 import com.example.hanghaeblog2.entity.Member;
 import com.example.hanghaeblog2.entity.Post;
 import com.example.hanghaeblog2.entity.UserRole;
@@ -33,11 +32,13 @@ public class PostService {
     private final JwtUtil jwtUtil;
     private final CommentRepository commentRepository;
 
+    //== 비즈니스 로직 ==//
+
     // 게시글 등록
     @Transactional
     public PostResponseDto postContent(PostRequestDto requestDto, HttpServletRequest request){
         // 토큰 검사
-        Member member = checkTokenValidation(request);
+        Member member = jwtUtil.checkTokenValidation(request);
         // 내용 저장
         Post post = new Post(requestDto,member);
         postRepository.save(post);
@@ -67,8 +68,10 @@ public class PostService {
     @Transactional
     public PostResponseDto changePost(PostRequestDto requestDto, HttpServletRequest request, Long id) {
         // 토큰 유효성
-        Member member = checkTokenValidation(request);
+        Member member = jwtUtil.checkTokenValidation(request);
+        // 게시글 유효성
         Post post = checkUpdate(member,id);
+        // 업데이트
         post.updatePost(requestDto);
         return new PostResponseDto(post);
     }
@@ -76,41 +79,21 @@ public class PostService {
     // 게시글 삭제
     @Transactional
     public statusResponseDto deletePost(HttpServletRequest request, Long id) {
-        Member member = checkTokenValidation(request);
+        // 토큰 유효성
+        Member member = jwtUtil.checkTokenValidation(request);
+        // 게시글 유효성
         Post post = checkUpdate(member, id);
+        // 업데이트
         postRepository.delete(post);
         return new statusResponseDto("게시글 삭제 성공", HttpStatus.OK);
     }
 
-    // 토큰 유효성 / 아이디 유무 검사
-    public Member checkTokenValidation(HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        Member member;
-        // 토큰 유무
-        if (token != null) {
-            // 토큰 일치 검사
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new TokenException("Token Error");
-            }
-            // 토큰으로 아이디 가져오기
-            member = memberRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new UnknownException("아이디가 존재하지 않습니다.")
-            );
-        } else {
-            return null;
-        }
-        return member;
-    }
+    //== 반복 로직 ==//
 
-    // 게시글
+    // 게시글 유효성 검사
     public Post checkUpdate(Member member, Long id) {
         // id로 게시글 찾기 (유무 확인)
-        Post post = postRepository.findById(id).orElseThrow(
-                () -> new NoPostException("게시글이 존재하지 않습니다.")
-        );
+        Post post = checkIdHasPost(id);
         // 권한 확인
         if (!(member.getRole() == UserRole.ADMIN || member.getId() == post.getMember().getId())) {
             throw new AuthorityException("권한이 없습니다.");
@@ -118,7 +101,7 @@ public class PostService {
         return post;
     }
 
-    // 아이디에 맞는 게시글이 있는 검사
+    // id로 게시글 찾기
     public Post checkIdHasPost(Long id) {
         return postRepository.findById(id).orElseThrow(
                 () -> new NoPostException("게시글이 존재하지 않습니다.")

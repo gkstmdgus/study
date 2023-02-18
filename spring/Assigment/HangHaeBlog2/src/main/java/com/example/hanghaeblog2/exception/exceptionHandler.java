@@ -1,12 +1,9 @@
 package com.example.hanghaeblog2.exception;
 
-import com.example.hanghaeblog2.dto.statusResponseDto;
+import com.example.hanghaeblog2.dto.response.statusResponseDto;
 import com.example.hanghaeblog2.exception.customException.*;
 import io.jsonwebtoken.security.SignatureException;
-import org.apache.tomcat.util.http.ResponseUtil;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

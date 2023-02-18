@@ -1,4 +1,4 @@
-package com.example.hanghaeblog2.dto;
+package com.example.hanghaeblog2.dto.response;
 
 import com.example.hanghaeblog2.entity.Comment;
 import lombok.Getter;

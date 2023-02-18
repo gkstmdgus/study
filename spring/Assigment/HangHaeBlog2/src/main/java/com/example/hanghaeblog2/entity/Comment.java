@@ -1,6 +1,6 @@
 package com.example.hanghaeblog2.entity;
 
-import com.example.hanghaeblog2.dto.CommentRequestDto;
+import com.example.hanghaeblog2.dto.request.CommentRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

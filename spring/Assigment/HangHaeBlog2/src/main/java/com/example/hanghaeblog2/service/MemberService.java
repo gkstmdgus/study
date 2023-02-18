@@ -1,7 +1,7 @@
 package com.example.hanghaeblog2.service;
 
-import com.example.hanghaeblog2.dto.MemberRequestDto;
-import com.example.hanghaeblog2.dto.statusResponseDto;
+import com.example.hanghaeblog2.dto.request.MemberRequestDto;
+import com.example.hanghaeblog2.dto.response.statusResponseDto;
 import com.example.hanghaeblog2.entity.Member;
 import com.example.hanghaeblog2.exception.customException.DuplicatedIdException;
 import com.example.hanghaeblog2.exception.customException.InvalidValueException;
@@ -22,6 +22,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
 
+    //== 비즈니스 로직 ==//
+
+    // 회원가입
     @Transactional
     public statusResponseDto signUp(MemberRequestDto memberRequestDto) {
         String username = memberRequestDto.getUsername();
@@ -42,6 +45,7 @@ public class MemberService {
         return new statusResponseDto("회원가입 성공", HttpStatus.OK);
     }
 
+    // 로그인
     @Transactional
     public statusResponseDto logIn(MemberRequestDto memberRequestDto, HttpServletResponse response) {
         // 아이디 유효성
@@ -55,11 +59,5 @@ public class MemberService {
         response.addHeader(jwtUtil.AUTHORIZATION_HEADER,jwtUtil.createToken(member.getUsername()));
         // ResponseDto 반환
         return new statusResponseDto("로그인 성공", HttpStatus.OK);
-    }
-
-    public void checkIdValidation(String id) {
-        // 길이 검사 && 문자 검사
-        if(4 > id.length() || id.length() > 10 || id.replaceAll("[0-9a-z]","").length() != 0)
-            throw new InvalidValueException("아이디가 적합하지 않습니다.");
     }
 }

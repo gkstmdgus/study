@@ -1,8 +1,8 @@
 package com.example.hanghaeblog2.service;
 
-import com.example.hanghaeblog2.dto.CommentRequestDto;
-import com.example.hanghaeblog2.dto.CommentResponseDto;
-import com.example.hanghaeblog2.dto.statusResponseDto;
+import com.example.hanghaeblog2.dto.request.CommentRequestDto;
+import com.example.hanghaeblog2.dto.response.CommentResponseDto;
+import com.example.hanghaeblog2.dto.response.statusResponseDto;
 import com.example.hanghaeblog2.entity.Comment;
 import com.example.hanghaeblog2.entity.Member;
 import com.example.hanghaeblog2.entity.Post;
@@ -31,11 +31,13 @@ public class CommentService {
     private final PostRepository postRepository;
     private final JwtUtil jwtUtil;
 
+    //== 비즈니스 로직 ==//
+
     // 댓글 등록
     @Transactional
     public CommentResponseDto postComment(CommentRequestDto requestDto, HttpServletRequest request, Long id) throws TokenException {
         //토큰 검사
-        Member member = checkTokenValidation(request);
+        Member member = jwtUtil.checkTokenValidation(request);
         // 게시글 DB 유무 확인
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new NoPostException("등록된 게시글이 없습니다.")
@@ -49,7 +51,9 @@ public class CommentService {
     // 댓글 수정
     @Transactional
     public CommentResponseDto updateComment(HttpServletRequest request, CommentRequestDto requestDto, Long comment) {
+        // 댓글 유효성 검사
         Comment checkedComment = commentValidation(request, comment);
+        // 댓글 업데이트
         checkedComment.update(requestDto);
         return new CommentResponseDto(checkedComment);
     }
@@ -57,38 +61,19 @@ public class CommentService {
     // 댓글 삭제
     @Transactional
     public statusResponseDto deleteService(HttpServletRequest request, Long comment) {
+        // 댓글 유효성 검사
         Comment checkedComment = commentValidation(request, comment);
+        // 댓글 업데이트
         commentRepository.delete(checkedComment);
         return new statusResponseDto("댓글 삭제 성공", HttpStatus.OK);
     }
 
-    // 토큰 유효성 / 아이디 유무 검사
-    public Member checkTokenValidation(HttpServletRequest request) throws TokenException {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        Member member;
-        // 토큰 유무
-        if (token != null) {
-            // 토큰 일치 검사
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new TokenException("Token Error");
-            }
-            // 토큰으로 아이디 가져오기
-            member = memberRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new UnknownException("아이디가 존재하지 않습니다.")
-            );
-        } else {
-            return null;
-        }
-        return member;
-    }
+    //== 반복 로직 ==/
 
     // 댓글 유효성 검사
     private Comment commentValidation(HttpServletRequest request, Long comment) {
         // 토큰 검사
-        Member member = checkTokenValidation(request);
+        Member member = jwtUtil.checkTokenValidation(request);
         // 댓글 유무 확인
         Comment findComment = commentRepository.findById(comment).orElseThrow(
                 () -> new NoPostException("댓글이 존재하지 않습니다.")
