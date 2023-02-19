@@ -1,11 +1,14 @@
 package com.example.hanghaeblog2.entity;
 
 import com.example.hanghaeblog2.dto.request.CommentRequestDto;
+import com.example.hanghaeblog2.entity.like.CommentLike;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -15,7 +18,7 @@ public class Comment extends TimeStamped {
     @Id
     @GeneratedValue
     @Column(name = "comment_id")
-    private Long comment;
+    private Long commentId;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
@@ -24,6 +27,9 @@ public class Comment extends TimeStamped {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "commet", cascade = CascadeType.REMOVE)
+    private List<CommentLike> commentLikes = new ArrayList<>();
 
     @Column
     private String author;

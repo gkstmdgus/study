@@ -1,6 +1,7 @@
 package com.example.hanghaeblog2.entity;
 
 import com.example.hanghaeblog2.dto.request.PostRequestDto;
+import com.example.hanghaeblog2.entity.like.PostLike;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,9 @@ public class Post extends TimeStamped{
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<PostLike> postLikes = new ArrayList<>();
 
     public Post(PostRequestDto postRequestDto, Member member) {
         this.title = postRequestDto.getTitle();
