@@ -2,6 +2,7 @@ package com.example.hanghaeblog2.config;
 
 import com.example.hanghaeblog2.jwt.JwtAuthFilter;
 import com.example.hanghaeblog2.jwt.JwtUtil;
+import com.example.hanghaeblog2.security.ExceptionHandlerFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +40,8 @@ public class WebSecurityConfig {
         http.authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/post/**").permitAll()
                 .anyRequest().authenticated()
-                .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new ExceptionHandlerFilter(),JwtAuthFilter.class);
 
         return http.build();
     }
