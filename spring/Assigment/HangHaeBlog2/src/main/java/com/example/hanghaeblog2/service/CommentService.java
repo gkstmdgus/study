@@ -7,11 +7,14 @@ import com.example.hanghaeblog2.entity.Comment;
 import com.example.hanghaeblog2.entity.Member;
 import com.example.hanghaeblog2.entity.Post;
 import com.example.hanghaeblog2.entity.UserRole;
+import com.example.hanghaeblog2.entity.like.CommentLike;
+import com.example.hanghaeblog2.entity.like.PostLike;
 import com.example.hanghaeblog2.exception.customException.AuthorityException;
 import com.example.hanghaeblog2.exception.customException.NoPostException;
 import com.example.hanghaeblog2.exception.customException.TokenException;
 import com.example.hanghaeblog2.exception.customException.UnknownException;
 import com.example.hanghaeblog2.jwt.JwtUtil;
+import com.example.hanghaeblog2.repository.CommentLikeRepository;
 import com.example.hanghaeblog2.repository.CommentRepository;
 import com.example.hanghaeblog2.repository.MemberRepository;
 import com.example.hanghaeblog2.repository.PostRepository;
@@ -29,8 +32,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
-    private final JwtUtil jwtUtil;
-
+    private final CommentLikeRepository commentLikeRepository;
     //== 비즈니스 로직 ==//
 
     // 댓글 등록
@@ -70,6 +72,27 @@ public class CommentService {
         return new statusResponseDto("댓글 삭제 성공", HttpStatus.OK);
     }
 
+    // 댓글 좋아요
+    @Transactional
+    public statusResponseDto commentLike(String username, Long comment) {
+        // 게시글 좋아요 객체가 있는지 확인
+        Member member = memberRepository.findByUsername(username).orElseThrow(UnknownException::new);
+        CommentLike hasLike = commentLikeRepository.findByMember_IdAndComment_Id(member.getId(), comment);
+        // 없으면 하나 만들어서 입력
+        String state = "";
+        if (hasLike == null) {
+            Comment findComment = commentRepository.findById(comment).orElseThrow(NoPostException::new);
+            CommentLike like = new CommentLike(findComment, member);
+            commentLikeRepository.save(like);
+            state = "댓글 좋아요 등록";
+        } else{
+            // 있으면 엔티티 삭제
+            commentLikeRepository.delete(hasLike);
+            state = "댓글 좋아요 취소";
+        }
+        return new statusResponseDto(state, HttpStatus.OK);
+    }
+
     //== 반복 로직 ==/
 
     // 댓글 유효성 검사
@@ -88,5 +111,4 @@ public class CommentService {
         }
         return findComment;
     }
-
 }

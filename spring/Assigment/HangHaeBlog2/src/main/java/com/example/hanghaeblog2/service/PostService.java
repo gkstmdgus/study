@@ -111,9 +111,6 @@ public class PostService {
             postLikeRepository.save(like);
             state = "게시글 좋아요 등록";
         } else{
-            // 있으면 좋아요 상태 반대로 변경
-//            hasLike.changeLike();
-//            state = hasLike.isLikeNumber() ? "게시글 좋아요 등록" : "게시글 좋아요 취소";
             // 있으면 엔티티 삭제
             postLikeRepository.delete(hasLike);
             state = "게시글 좋아요 취소";

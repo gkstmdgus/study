@@ -18,7 +18,7 @@ public class Comment extends TimeStamped {
     @Id
     @GeneratedValue
     @Column(name = "comment_id")
-    private Long commentId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "post_id")

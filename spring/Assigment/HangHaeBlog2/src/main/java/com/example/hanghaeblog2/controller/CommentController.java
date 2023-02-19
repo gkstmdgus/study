@@ -34,4 +34,10 @@ public class CommentController {
     public statusResponseDto deleteComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long comment) {
         return commentService.deleteService(userDetails.getUsername(), comment);
     }
+
+    // 댓글 좋아요
+    @GetMapping("/comment/like/{comment}")
+    public statusResponseDto postLike(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long comment) {
+        return commentService.commentLike(userDetails.getUsername(), comment);
+    }
 }
