@@ -28,7 +28,7 @@ public class Comment extends TimeStamped {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "commet", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
     private List<CommentLike> commentLikes = new ArrayList<>();
 
     @Column

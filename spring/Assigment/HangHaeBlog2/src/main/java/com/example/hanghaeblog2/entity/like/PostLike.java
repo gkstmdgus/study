@@ -25,5 +25,5 @@ public class PostLike {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private boolean like;
+    private boolean likeNumber;
 }

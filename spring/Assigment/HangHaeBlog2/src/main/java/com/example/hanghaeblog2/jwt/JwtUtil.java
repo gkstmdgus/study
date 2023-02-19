@@ -94,31 +94,32 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    // 토큰 유효성 / 아이디 유무 검사
-    public Member checkTokenValidation(HttpServletRequest request) {
-        String token = this.resolveToken(request);
-        Claims claims;
-        Member member;
-        // 토큰 유무
-        if (token != null) {
-            // 토큰 일치 검사
-            if (this.validateToken(token)) {
-                claims = this.getUserInfoFromToken(token);
-            } else {
-                throw new TokenException("Token Error");
-            }
-            // 토큰으로 아이디 가져오기
-            member = memberRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new UnknownException("아이디가 존재하지 않습니다.")
-            );
-        } else {
-            return null;
-        }
-        return member;
-    }
-
     public Authentication createAuthentication(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
+
+    // 시큐리티 이전 유효성 코드
+    //    // 토큰 유효성 / 아이디 유무 검사
+//    public Member checkTokenValidation(HttpServletRequest request) {
+//        String token = this.resolveToken(request);
+//        Claims claims;
+//        Member member;
+//        // 토큰 유무
+//        if (token != null) {
+//            // 토큰 일치 검사
+//            if (this.validateToken(token)) {
+//                claims = this.getUserInfoFromToken(token);
+//            } else {
+//                throw new TokenException("Token Error");
+//            }
+//            // 토큰으로 아이디 가져오기
+//            member = memberRepository.findByUsername(claims.getSubject()).orElseThrow(
+//                    () -> new UnknownException("아이디가 존재하지 않습니다.")
+//            );
+//        } else {
+//            return null;
+//        }
+//        return member;
+//    }
 }

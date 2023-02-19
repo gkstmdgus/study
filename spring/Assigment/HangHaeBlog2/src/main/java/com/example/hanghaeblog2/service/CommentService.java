@@ -35,9 +35,11 @@ public class CommentService {
 
     // 댓글 등록
     @Transactional
-    public CommentResponseDto postComment(CommentRequestDto requestDto, HttpServletRequest request, Long id) throws TokenException {
+    public CommentResponseDto postComment(CommentRequestDto requestDto, String username, Long id) throws TokenException {
         //토큰 검사
-        Member member = jwtUtil.checkTokenValidation(request);
+//        Member member = jwtUtil.checkTokenValidation(request);
+        // member 찾아오기
+        Member member = memberRepository.findByUsername(username).orElseThrow(UnknownException::new);
         // 게시글 DB 유무 확인
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new NoPostException("등록된 게시글이 없습니다.")
@@ -50,9 +52,9 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public CommentResponseDto updateComment(HttpServletRequest request, CommentRequestDto requestDto, Long comment) {
+    public CommentResponseDto updateComment(String username, CommentRequestDto requestDto, Long comment) {
         // 댓글 유효성 검사
-        Comment checkedComment = commentValidation(request, comment);
+        Comment checkedComment = commentValidation(username, comment);
         // 댓글 업데이트
         checkedComment.update(requestDto);
         return new CommentResponseDto(checkedComment);
@@ -60,9 +62,9 @@ public class CommentService {
 
     // 댓글 삭제
     @Transactional
-    public statusResponseDto deleteService(HttpServletRequest request, Long comment) {
+    public statusResponseDto deleteService(String username, Long comment) {
         // 댓글 유효성 검사
-        Comment checkedComment = commentValidation(request, comment);
+        Comment checkedComment = commentValidation(username, comment);
         // 댓글 업데이트
         commentRepository.delete(checkedComment);
         return new statusResponseDto("댓글 삭제 성공", HttpStatus.OK);
@@ -71,9 +73,11 @@ public class CommentService {
     //== 반복 로직 ==/
 
     // 댓글 유효성 검사
-    private Comment commentValidation(HttpServletRequest request, Long comment) {
-        // 토큰 검사
-        Member member = jwtUtil.checkTokenValidation(request);
+    private Comment commentValidation(String username, Long comment) {
+        //토큰 검사
+//        Member member = jwtUtil.checkTokenValidation(request);
+        // member 찾아오기
+        Member member = memberRepository.findByUsername(username).orElseThrow(UnknownException::new);
         // 댓글 유무 확인
         Comment findComment = commentRepository.findById(comment).orElseThrow(
                 () -> new NoPostException("댓글이 존재하지 않습니다.")
