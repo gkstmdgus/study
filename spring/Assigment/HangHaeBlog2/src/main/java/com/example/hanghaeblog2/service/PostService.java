@@ -6,6 +6,7 @@ import com.example.hanghaeblog2.dto.response.PostResponseDto;
 import com.example.hanghaeblog2.entity.Member;
 import com.example.hanghaeblog2.entity.Post;
 import com.example.hanghaeblog2.entity.UserRole;
+import com.example.hanghaeblog2.entity.like.PostLike;
 import com.example.hanghaeblog2.exception.customException.AuthorityException;
 import com.example.hanghaeblog2.exception.customException.NoPostException;
 import com.example.hanghaeblog2.exception.customException.TokenException;
@@ -13,6 +14,7 @@ import com.example.hanghaeblog2.exception.customException.UnknownException;
 import com.example.hanghaeblog2.jwt.JwtUtil;
 import com.example.hanghaeblog2.repository.CommentRepository;
 import com.example.hanghaeblog2.repository.MemberRepository;
+import com.example.hanghaeblog2.repository.PostLikeRepository;
 import com.example.hanghaeblog2.repository.PostRepository;
 import com.example.hanghaeblog2.security.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
@@ -30,8 +32,8 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-    private final JwtUtil jwtUtil;
     private final CommentRepository commentRepository;
+    private final PostLikeRepository postLikeRepository;
 
     //== 비즈니스 로직 ==//
 
@@ -93,6 +95,30 @@ public class PostService {
         // 업데이트
         postRepository.delete(post);
         return new statusResponseDto("게시글 삭제 성공", HttpStatus.OK);
+    }
+
+    // 게시글 좋아요
+    @Transactional
+    public statusResponseDto postLike(String username, Long id) {
+        // 게시글 좋아요 객체가 있는지 확인
+        Member member = memberRepository.findByUsername(username).orElseThrow(UnknownException::new);
+        PostLike hasLike = postLikeRepository.findByMember_IdAndPost_Id(member.getId(), id);
+        // 없으면 하나 만들어서 입력
+        String state = "";
+        if (hasLike == null) {
+            Post post = postRepository.findById(id).orElseThrow(NoPostException::new);
+            PostLike like = new PostLike(post, member);
+            postLikeRepository.save(like);
+            state = "게시글 좋아요 등록";
+        } else{
+            // 있으면 좋아요 상태 반대로 변경
+//            hasLike.changeLike();
+//            state = hasLike.isLikeNumber() ? "게시글 좋아요 등록" : "게시글 좋아요 취소";
+            // 있으면 엔티티 삭제
+            postLikeRepository.delete(hasLike);
+            state = "게시글 좋아요 취소";
+        }
+        return new statusResponseDto(state, HttpStatus.OK);
     }
 
     //== 반복 로직 ==//

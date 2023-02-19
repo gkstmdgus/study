@@ -25,5 +25,15 @@ public class PostLike {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private boolean likeNumber;
+//    private boolean likeNumber = true;
+
+    public PostLike(Post post, Member member) {
+        this.post = post;
+        this.member = member;
+    }
+
+//    // 좋아요 상태 변경
+//    public void changeLike() {
+//        this.likeNumber = !likeNumber;
+//    }
 }

@@ -1,6 +1,5 @@
 package com.example.hanghaeblog2.dto.response;
 
-import com.example.hanghaeblog2.dto.response.CommentResponseDto;
 import com.example.hanghaeblog2.entity.Comment;
 import com.example.hanghaeblog2.entity.Post;
 import lombok.Getter;
@@ -22,6 +21,7 @@ public class PostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private List<CommentResponseDto> commentList = new ArrayList<>();
+    private int postLikeNumber;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
@@ -30,6 +30,7 @@ public class PostResponseDto {
         this.username = post.getMember().getUsername();
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
+        this.postLikeNumber = post.getPostLikes().size();
     }
 
     public PostResponseDto(Post post, List<Comment> list) {

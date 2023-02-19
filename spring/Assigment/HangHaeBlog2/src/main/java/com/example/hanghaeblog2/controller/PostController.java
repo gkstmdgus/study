@@ -47,4 +47,10 @@ public class PostController {
     public statusResponseDto deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.deletePost(userDetails.getUsername(), id);
     }
+
+    // 게시글 좋아요
+    @GetMapping("/post/like/{id}")
+    public statusResponseDto postLike(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
+        return postService.postLike(userDetails.getUsername(), id);
+    }
 }
