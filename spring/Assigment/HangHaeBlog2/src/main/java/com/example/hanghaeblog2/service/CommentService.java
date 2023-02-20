@@ -21,6 +21,7 @@ import com.example.hanghaeblog2.repository.PostRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +38,7 @@ public class CommentService {
 
     // 댓글 등록
     @Transactional
-    public CommentResponseDto postComment(CommentRequestDto requestDto, String username, Long id) throws TokenException {
+    public ResponseEntity<CommentResponseDto> postComment(CommentRequestDto requestDto, String username, Long id) throws TokenException {
         //토큰 검사
 //        Member member = jwtUtil.checkTokenValidation(request);
         // member 찾아오기
@@ -49,32 +50,32 @@ public class CommentService {
         // 등록
         Comment comment = new Comment(requestDto, post, member);
         commentRepository.save(comment);
-        return new CommentResponseDto(comment);
+        return ResponseEntity.ok(new CommentResponseDto(comment));
     }
 
     // 댓글 수정
     @Transactional
-    public CommentResponseDto updateComment(String username, CommentRequestDto requestDto, Long comment) {
+    public ResponseEntity<CommentResponseDto> updateComment(String username, CommentRequestDto requestDto, Long comment) {
         // 댓글 유효성 검사
         Comment checkedComment = commentValidation(username, comment);
         // 댓글 업데이트
         checkedComment.update(requestDto);
-        return new CommentResponseDto(checkedComment);
+        return ResponseEntity.ok(new CommentResponseDto(checkedComment));
     }
 
     // 댓글 삭제
     @Transactional
-    public statusResponseDto deleteService(String username, Long comment) {
+    public ResponseEntity<statusResponseDto> deleteService(String username, Long comment) {
         // 댓글 유효성 검사
         Comment checkedComment = commentValidation(username, comment);
         // 댓글 업데이트
         commentRepository.delete(checkedComment);
-        return new statusResponseDto("댓글 삭제 성공", HttpStatus.OK);
+        return ResponseEntity.ok(new statusResponseDto("댓글 삭제 성공", HttpStatus.OK));
     }
 
     // 댓글 좋아요
     @Transactional
-    public statusResponseDto commentLike(String username, Long comment) {
+    public ResponseEntity<statusResponseDto> commentLike(String username, Long comment) {
         // 게시글 좋아요 객체가 있는지 확인
         Member member = memberRepository.findByUsername(username).orElseThrow(UnknownException::new);
         CommentLike hasLike = commentLikeRepository.findByMember_IdAndComment_Id(member.getId(), comment);
@@ -90,7 +91,7 @@ public class CommentService {
             commentLikeRepository.delete(hasLike);
             state = "댓글 좋아요 취소";
         }
-        return new statusResponseDto(state, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(new statusResponseDto(state,HttpStatus.OK));
     }
 
     //== 반복 로직 ==/

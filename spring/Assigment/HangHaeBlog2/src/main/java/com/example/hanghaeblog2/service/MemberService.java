@@ -10,8 +10,10 @@ import com.example.hanghaeblog2.jwt.JwtUtil;
 import com.example.hanghaeblog2.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.function.EntityResponse;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,7 +28,7 @@ public class MemberService {
 
     // 회원가입
     @Transactional
-    public statusResponseDto signUp(MemberRequestDto memberRequestDto) {
+    public ResponseEntity<statusResponseDto> signUp(MemberRequestDto memberRequestDto) {
         String username = memberRequestDto.getUsername();
         String password = memberRequestDto.getPassword();
         // 아이디 중복
@@ -42,12 +44,12 @@ public class MemberService {
             throw new InvalidValueException("비밀번호가 적합하지 않습니다.");
         Member member = new Member(memberRequestDto);
         memberRepository.save(member);
-        return new statusResponseDto("회원가입 성공", HttpStatus.OK);
+        return ResponseEntity.ok(new statusResponseDto("회원가입 성공", HttpStatus.OK));
     }
 
     // 로그인
     @Transactional
-    public statusResponseDto logIn(MemberRequestDto memberRequestDto, HttpServletResponse response) {
+    public ResponseEntity<statusResponseDto> logIn(MemberRequestDto memberRequestDto, HttpServletResponse response) {
         // 아이디 유효성
         Member member =  memberRepository.findByUsername(memberRequestDto.getUsername()).orElseThrow(
                 () -> new UnknownException("아이디가 존재하지 않습니다.")
@@ -58,6 +60,6 @@ public class MemberService {
         // 토큰 발급 , 헤더에 입력
         response.addHeader(jwtUtil.AUTHORIZATION_HEADER,jwtUtil.createToken(member.getUsername()));
         // ResponseDto 반환
-        return new statusResponseDto("로그인 성공", HttpStatus.OK);
+        return ResponseEntity.ok(new statusResponseDto("로그인 성공", HttpStatus.OK));
     }
 }

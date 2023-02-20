@@ -20,6 +20,7 @@ import com.example.hanghaeblog2.security.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +40,7 @@ public class PostService {
 
     // 게시글 등록
     @Transactional
-    public PostResponseDto postContent(PostRequestDto requestDto, String username){
+    public ResponseEntity<PostResponseDto> postContent(PostRequestDto requestDto, String username){
         // 토큰 검사
 //        Member member = jwtUtil.checkTokenValidation(request);
         // member 반환
@@ -48,7 +49,7 @@ public class PostService {
         Post post = new Post(requestDto,member);
         postRepository.save(post);
         // 게시글 반환
-        return new PostResponseDto(post);
+        return ResponseEntity.ok(new PostResponseDto(post));
     }
 
     // 모든 게시글 조회
@@ -64,14 +65,14 @@ public class PostService {
 
     // 특정 게시글 조회
     @Transactional
-    public PostResponseDto getPost(Long id) {
+    public ResponseEntity<PostResponseDto> getPost(Long id) {
         Post post = checkIdHasPost(id);
-        return new PostResponseDto(post, post.getComments());
+        return ResponseEntity.ok(new PostResponseDto(post, post.getComments()));
     }
 
     // 게시글 변경
     @Transactional
-    public PostResponseDto changePost(PostRequestDto requestDto, String username, Long id) {
+    public ResponseEntity<PostResponseDto> changePost(PostRequestDto requestDto, String username, Long id) {
         // 토큰 유효성
 //        Member member = jwtUtil.checkTokenValidation(request);
         // 멤버 찾기
@@ -80,12 +81,12 @@ public class PostService {
         Post post = checkUpdate(member,id);
         // 업데이트
         post.updatePost(requestDto);
-        return new PostResponseDto(post);
+        return ResponseEntity.ok(new PostResponseDto(post));
     }
 
     // 게시글 삭제
     @Transactional
-    public statusResponseDto deletePost(String username, Long id) {
+    public ResponseEntity<statusResponseDto> deletePost(String username, Long id) {
         // 토큰 유효성
 //        Member member = jwtUtil.checkTokenValidation(request);
         // 멤버 찾기
@@ -94,12 +95,12 @@ public class PostService {
         Post post = checkUpdate(member, id);
         // 업데이트
         postRepository.delete(post);
-        return new statusResponseDto("게시글 삭제 성공", HttpStatus.OK);
+        return ResponseEntity.ok(new statusResponseDto("게시글 삭제 성공", HttpStatus.OK));
     }
 
     // 게시글 좋아요
     @Transactional
-    public statusResponseDto postLike(String username, Long id) {
+    public ResponseEntity<statusResponseDto> postLike(String username, Long id) {
         // 게시글 좋아요 객체가 있는지 확인
         Member member = memberRepository.findByUsername(username).orElseThrow(UnknownException::new);
         PostLike hasLike = postLikeRepository.findByMember_IdAndPost_Id(member.getId(), id);
@@ -115,7 +116,7 @@ public class PostService {
             postLikeRepository.delete(hasLike);
             state = "게시글 좋아요 취소";
         }
-        return new statusResponseDto(state, HttpStatus.OK);
+        return ResponseEntity.ok(new statusResponseDto(state, HttpStatus.OK));
     }
 
     //== 반복 로직 ==//
