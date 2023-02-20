@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// 엔티티 조회
 @RestController
 @RequiredArgsConstructor
 public class OrderSimpleApiController {

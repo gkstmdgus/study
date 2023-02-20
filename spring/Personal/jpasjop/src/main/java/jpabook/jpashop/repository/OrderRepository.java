@@ -57,11 +57,36 @@ public class OrderRepository {
         return query.getResultList();
     }
 
+    // member, delivery 페치 조인
     public List<Order> findAllWithMemberDelivery() {
         return em.createQuery(
                 "select o from Order o" +
                         " join fetch o.member m" +
                         " join fetch o.delivery d", Order.class
         ).getResultList();
+    }
+
+
+    // 전체 페치 조인
+    public List<Order> findAllwithItem() {
+        return em.createQuery(
+                "select distinct o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d" +
+                        " join fetch o.orderItems oi" +
+                        " join fetch oi.item i", Order.class
+        ).getResultList();
+    }
+
+    // member, delivery 페치 조인 + 페이징
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class
+        )
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
     }
 }
