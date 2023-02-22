@@ -1,6 +1,6 @@
 package com.example.hanghaeblog2.controller;
 
-import com.example.hanghaeblog2.dto.fetch.getAllPostDto;
+import com.example.hanghaeblog2.dto.fetch.GetPostDto;
 import com.example.hanghaeblog2.dto.response.statusResponseDto;
 import com.example.hanghaeblog2.dto.request.PostRequestDto;
 import com.example.hanghaeblog2.dto.response.PostResponseDto;
@@ -21,13 +21,13 @@ public class PostController {
 
     // 전체 게시글 조회
     @GetMapping("/post")
-    public List<getAllPostDto> getAllPosts() {
+    public List<GetPostDto> getAllPosts() {
         return postService.getAllPosts();
     }
 
     // 특정 게시글 조회
     @GetMapping("/post/{id}")
-    public ResponseEntity<PostResponseDto> getPost(@PathVariable Long id) {
+    public ResponseEntity<GetPostDto> getPost(@PathVariable Long id) {
         return postService.getPost(id);
     }
 

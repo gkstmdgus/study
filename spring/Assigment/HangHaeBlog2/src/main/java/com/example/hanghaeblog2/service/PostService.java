@@ -1,12 +1,10 @@
 package com.example.hanghaeblog2.service;
 
-import com.example.hanghaeblog2.dto.fetch.getAllPostDto;
+import com.example.hanghaeblog2.dto.fetch.GetPostDto;
 import com.example.hanghaeblog2.dto.response.statusResponseDto;
 import com.example.hanghaeblog2.dto.request.PostRequestDto;
 import com.example.hanghaeblog2.dto.response.PostResponseDto;
-import com.example.hanghaeblog2.entity.Member;
-import com.example.hanghaeblog2.entity.Post;
-import com.example.hanghaeblog2.entity.UserRole;
+import com.example.hanghaeblog2.entity.*;
 import com.example.hanghaeblog2.entity.like.PostLike;
 import com.example.hanghaeblog2.exception.customException.AuthorityException;
 import com.example.hanghaeblog2.exception.customException.NoPostException;
@@ -15,6 +13,7 @@ import com.example.hanghaeblog2.repository.CommentRepository;
 import com.example.hanghaeblog2.repository.MemberRepository;
 import com.example.hanghaeblog2.repository.PostLikeRepository;
 import com.example.hanghaeblog2.repository.PostRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.example.hanghaeblog2.entity.QMember.*;
+import static com.example.hanghaeblog2.entity.QPost.*;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +55,7 @@ public class PostService {
 
     // 모든 게시글 조회
     @Transactional
-    public List<getAllPostDto> getAllPosts() {
+    public List<GetPostDto> getAllPosts() {
 //        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
 //        List<PostResponseDto> postDto = new ArrayList<>();
 //        for (Post post : posts) {
@@ -66,22 +68,44 @@ public class PostService {
     /**
      * 모든 게시글 조회 페치조인 적용해보기 (순수 JPA)
      */
-    public List<getAllPostDto> getAllPostsFetch() {
+    public List<GetPostDto> getAllPostsFetch() {
         List<Post> fetchList = em.createQuery(
                 "select p" +
                         " from Post p" +
                         " join fetch p.member m", Post.class
         ).getResultList();
-
-        List<getAllPostDto> result = fetchList.stream().map(getAllPostDto::new).collect(Collectors.toList());
+        System.out.println("===========");
+        List<GetPostDto> result = fetchList.stream().map(GetPostDto::new).collect(Collectors.toList());
         return result;
     }
 
     // 특정 게시글 조회
     @Transactional
-    public ResponseEntity<PostResponseDto> getPost(Long id) {
-        Post post = checkIdHasPost(id);
-        return ResponseEntity.ok(new PostResponseDto(post, post.getComments()));
+    public ResponseEntity<GetPostDto> getPost(Long id) {
+//        Post post = checkIdHasPost(id);
+//        return ResponseEntity.ok(new PostResponseDto(post, post.getComments()));
+        return ResponseEntity.ok(getPostQuery(id));
+    }
+
+    /**
+     * QueryDSL을 사용해서 특정 게시물 조회하기
+     */
+    public GetPostDto getPostQuery(Long id) {
+        System.out.println("======================");
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        Post resultPost = queryFactory
+                .selectFrom(post)
+                .join(post.member, member).fetchJoin()
+                .where(post.id.eq(id))
+                .fetchOne();
+        // null 이면 없는 거임 예외 던지기
+        if (resultPost == null) {
+            throw new NoPostException("포스트 없음");
+        }
+        GetPostDto result = new GetPostDto(resultPost);
+        System.out.println("======================");
+        return result;
     }
 
     // 게시글 변경
