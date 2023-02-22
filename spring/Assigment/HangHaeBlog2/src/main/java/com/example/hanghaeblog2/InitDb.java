@@ -22,7 +22,8 @@ public class InitDb {
     public void init() {
         initService.dbinit();
     }
-    
+
+    // 초기값 자동 세팅
     @Component
     @Transactional
     @RequiredArgsConstructor

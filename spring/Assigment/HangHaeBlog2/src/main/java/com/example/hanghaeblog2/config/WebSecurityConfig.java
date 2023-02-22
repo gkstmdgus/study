@@ -40,7 +40,9 @@ public class WebSecurityConfig {
         http.authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/post/**").permitAll()
                 .anyRequest().authenticated()
+                // jwt 필터 적용
                 .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                // jwt 필터 전에 ExceptionHandlerFilter 넣어서 예외 처리
                 .addFilterBefore(new ExceptionHandlerFilter(),JwtAuthFilter.class);
 
         return http.build();

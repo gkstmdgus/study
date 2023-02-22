@@ -74,7 +74,6 @@ public class PostService {
                         " from Post p" +
                         " join fetch p.member m", Post.class
         ).getResultList();
-        System.out.println("===========");
         List<GetPostDto> result = fetchList.stream().map(GetPostDto::new).collect(Collectors.toList());
         return result;
     }
@@ -91,7 +90,6 @@ public class PostService {
      * QueryDSL을 사용해서 특정 게시물 조회하기
      */
     public GetPostDto getPostQuery(Long id) {
-        System.out.println("======================");
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
         Post resultPost = queryFactory
@@ -104,7 +102,6 @@ public class PostService {
             throw new NoPostException("포스트 없음");
         }
         GetPostDto result = new GetPostDto(resultPost);
-        System.out.println("======================");
         return result;
     }
 

@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
 
+// 예외 처리 필터
 @Component
 @Slf4j
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
@@ -42,8 +43,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         } catch (UnknownException e) {
             log.info(ExceptionRole.UNKNOWN_EXCEPTION.getDesc());
             customExceptionHandler(response,ExceptionRole.UNKNOWN_EXCEPTION.getDesc(), HttpStatus.BAD_REQUEST);
-        }
-        catch (SignatureException e) {
+        } catch (SignatureException e) {
             log.info(ExceptionRole.EXCEPTION.getDesc());
             customExceptionHandler(response,ExceptionRole.EXCEPTION.getDesc(),HttpStatus.BAD_REQUEST);
         }
