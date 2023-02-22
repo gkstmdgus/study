@@ -1,5 +1,6 @@
 package com.example.hanghaeblog2.service;
 
+import com.example.hanghaeblog2.dto.fetch.getAllPostDto;
 import com.example.hanghaeblog2.dto.response.statusResponseDto;
 import com.example.hanghaeblog2.dto.request.PostRequestDto;
 import com.example.hanghaeblog2.dto.response.PostResponseDto;
@@ -9,28 +10,26 @@ import com.example.hanghaeblog2.entity.UserRole;
 import com.example.hanghaeblog2.entity.like.PostLike;
 import com.example.hanghaeblog2.exception.customException.AuthorityException;
 import com.example.hanghaeblog2.exception.customException.NoPostException;
-import com.example.hanghaeblog2.exception.customException.TokenException;
 import com.example.hanghaeblog2.exception.customException.UnknownException;
-import com.example.hanghaeblog2.jwt.JwtUtil;
 import com.example.hanghaeblog2.repository.CommentRepository;
 import com.example.hanghaeblog2.repository.MemberRepository;
 import com.example.hanghaeblog2.repository.PostLikeRepository;
 import com.example.hanghaeblog2.repository.PostRepository;
-import com.example.hanghaeblog2.security.UserDetailsImpl;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
+import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
+
+    private final EntityManager em;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
@@ -54,13 +53,28 @@ public class PostService {
 
     // 모든 게시글 조회
     @Transactional
-    public List<PostResponseDto> getAllPosts() {
-        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
-        List<PostResponseDto> postDto = new ArrayList<>();
-        for (Post post : posts) {
-            postDto.add(new PostResponseDto(post, commentRepository.findCommentByPostOrderByCreatedAtDesc(post)));
-        }
-        return postDto;
+    public List<getAllPostDto> getAllPosts() {
+//        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
+//        List<PostResponseDto> postDto = new ArrayList<>();
+//        for (Post post : posts) {
+//            postDto.add(new PostResponseDto(post, commentRepository.findCommentByPostOrderByCreatedAtDesc(post)));
+//        }
+//        return postDto;
+        return getAllPostsFetch();
+    }
+
+    /**
+     * 모든 게시글 조회 페치조인 적용해보기 (순수 JPA)
+     */
+    public List<getAllPostDto> getAllPostsFetch() {
+        List<Post> fetchList = em.createQuery(
+                "select p" +
+                        " from Post p" +
+                        " join fetch p.member m", Post.class
+        ).getResultList();
+
+        List<getAllPostDto> result = fetchList.stream().map(getAllPostDto::new).collect(Collectors.toList());
+        return result;
     }
 
     // 특정 게시글 조회

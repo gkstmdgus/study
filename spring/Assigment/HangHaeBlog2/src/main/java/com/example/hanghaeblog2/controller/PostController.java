@@ -1,5 +1,6 @@
 package com.example.hanghaeblog2.controller;
 
+import com.example.hanghaeblog2.dto.fetch.getAllPostDto;
 import com.example.hanghaeblog2.dto.response.statusResponseDto;
 import com.example.hanghaeblog2.dto.request.PostRequestDto;
 import com.example.hanghaeblog2.dto.response.PostResponseDto;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -21,7 +21,7 @@ public class PostController {
 
     // 전체 게시글 조회
     @GetMapping("/post")
-    public List<PostResponseDto> getAllPosts() {
+    public List<getAllPostDto> getAllPosts() {
         return postService.getAllPosts();
     }
 

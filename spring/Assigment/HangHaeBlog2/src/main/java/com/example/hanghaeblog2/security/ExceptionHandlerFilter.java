@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -41,7 +42,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         } catch (UnknownException e) {
             log.info(ExceptionRole.UNKNOWN_EXCEPTION.getDesc());
             customExceptionHandler(response,ExceptionRole.UNKNOWN_EXCEPTION.getDesc(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
+        }
+        catch (SignatureException e) {
             log.info(ExceptionRole.EXCEPTION.getDesc());
             customExceptionHandler(response,ExceptionRole.EXCEPTION.getDesc(),HttpStatus.BAD_REQUEST);
         }
